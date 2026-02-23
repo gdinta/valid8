@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Valid8 — Map</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <style>
+        #mapContainer { height: 520px; border-radius: 0.75rem; overflow: hidden; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-slate-800 border-b border-yellow-400 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+        <span class="text-yellow-400 text-2xl font-extrabold tracking-wide">Valid8</span>
+        <div class="flex gap-6 text-sm font-medium">
+            <a href="/" class="text-slate-300 hover:text-yellow-400 transition">Dashboard</a>
+            <a href="/violations" class="text-slate-300 hover:text-yellow-400 transition">Violations</a>
+            <a href="/unregistered" class="text-slate-300 hover:text-yellow-400 transition">Unregistered</a>
+            <a href="/map" class="text-yellow-400 border-b-2 border-yellow-400 pb-0.5">Map</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<div class="max-w-7xl mx-auto px-4 pt-8 pb-4 flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <h1 class="text-3xl font-bold text-white">Live Lot Map</h1>
+        <p class="text-slate-400 text-sm mt-1">Rutgers University — New Brunswick Campus</p>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+        <span id="lastUpdated" class="text-slate-400 text-xs"></span>
+        <button onclick="reloadData()"
+                class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm transition">
+            ↺ Reload Data
+        </button>
+    </div>
+</div>
+
+<!-- Error Banner -->
+<div id="errorBanner" class="hidden max-w-7xl mx-auto px-4 mb-4">
+    <div class="bg-red-900 border border-red-500 text-red-200 px-4 py-3 rounded-lg text-sm"></div>
+</div>
+
+<!-- Map + Legend -->
+<main class="max-w-7xl mx-auto px-4 pb-12">
+    <div class="bg-slate-800 rounded-xl shadow-xl p-4">
+        <div id="mapContainer"></div>
+
+        <!-- Legend -->
+        <div class="flex flex-wrap gap-4 mt-4 text-sm">
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-green-500 inline-block"></span>
+                <span class="text-slate-300">Available ≥ 40%</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-yellow-400 inline-block"></span>
+                <span class="text-slate-300">Available 15–40%</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-red-500 inline-block"></span>
+                <span class="text-slate-300">Available &lt; 15%</span>
+            </div>
+            <div class="ml-auto text-slate-400 text-xs flex items-center">
+                Map refreshes every 5 seconds
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Leaflet JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/map.js}"></script>
+</body>
+</html>

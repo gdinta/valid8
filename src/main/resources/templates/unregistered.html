@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Valid8 — Unregistered</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-slate-800 border-b border-yellow-400 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+        <span class="text-yellow-400 text-2xl font-extrabold tracking-wide">Valid8</span>
+        <div class="flex gap-6 text-sm font-medium">
+            <a href="/" class="text-slate-300 hover:text-yellow-400 transition">Dashboard</a>
+            <a href="/violations" class="text-slate-300 hover:text-yellow-400 transition">Violations</a>
+            <a href="/unregistered" class="text-yellow-400 border-b-2 border-yellow-400 pb-0.5">Unregistered</a>
+            <a href="/map" class="text-slate-300 hover:text-yellow-400 transition">Map</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<div class="max-w-7xl mx-auto px-4 pt-8 pb-4 flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <h1 class="text-3xl font-bold text-white">Unregistered Plates</h1>
+        <p class="text-slate-400 text-sm mt-1">Vehicles with no registration on file</p>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+        <span id="lastUpdated" class="text-slate-400 text-xs"></span>
+        <span id="unregCount" class="bg-orange-700 text-white text-xs font-bold px-3 py-1 rounded-full"></span>
+        <button onclick="reloadData()"
+                class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm transition">
+            ↺ Reload Data
+        </button>
+    </div>
+</div>
+
+<!-- Error Banner -->
+<div id="errorBanner" class="hidden max-w-7xl mx-auto px-4 mb-4">
+    <div class="bg-red-900 border border-red-500 text-red-200 px-4 py-3 rounded-lg text-sm"></div>
+</div>
+
+<!-- Table -->
+<main class="max-w-7xl mx-auto px-4 pb-12">
+    <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-slate-700 text-slate-300 text-xs uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left">#</th>
+                        <th class="px-6 py-3 text-left">License Plate</th>
+                        <th class="px-6 py-3 text-left">Lot</th>
+                    </tr>
+                </thead>
+                <tbody id="unregisteredBody">
+                    <tr>
+                        <td colspan="3" class="text-center py-16 text-slate-500">Loading…</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/unregistered.js}"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+/* Valid8 — custom CSS supplement */
+
+body { background: #000; }
+
+/* Leaflet dark map background */
+.leaflet-container { background: #020810; }
+
+/* Custom scrollbar for tables */
+.overflow-x-auto::-webkit-scrollbar { height: 5px; }
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #1d4ed8;
+    border-radius: 3px;
+}
+
+/* row-b helper (slightly different shade from row-a) */
+.row-b { background: #03080f; }
+.row-a { background: #020810; }

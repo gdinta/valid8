@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Valid8 — Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #000;
+            min-height: 100vh;
+        }
+        .card-glow-student:hover {
+            box-shadow: 0 0 32px rgba(59,130,246,0.45);
+        }
+        .card-glow-rupd:hover {
+            box-shadow: 0 0 32px rgba(37,99,235,0.45);
+        }
+        .input-field {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(59,130,246,0.3);
+            color: #fff;
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-size: 14px;
+        }
+        .input-field:focus {
+            border-color: #3b82f6;
+        }
+        .input-field::placeholder { color: #4b5563; }
+        .btn-login {
+            width: 100%;
+            padding: 11px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.03em;
+        }
+        .portal-tab {
+            padding: 8px 24px;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            border-bottom: none;
+        }
+        .portal-tab.active-student {
+            background: #1e3a5f;
+            color: #93c5fd;
+            border-color: #1d4ed8;
+        }
+        .portal-tab.inactive {
+            background: rgba(255,255,255,0.03);
+            color: #6b7280;
+            border-color: rgba(255,255,255,0.06);
+        }
+        .portal-tab.active-rupd {
+            background: #1e2d4f;
+            color: #60a5fa;
+            border-color: #1d4ed8;
+        }
+        .form-panel {
+            border-radius: 0 12px 12px 12px;
+        }
+        .badge-student {
+            background: linear-gradient(135deg, #1e3a5f, #1d4ed8);
+            border: 1px solid #2563eb;
+        }
+        .badge-rupd {
+            background: linear-gradient(135deg, #0f1f3d, #1e40af);
+            border: 1px solid #1d4ed8;
+        }
+        .divider { border-color: rgba(59,130,246,0.15); }
+        .logo-glow { text-shadow: 0 0 24px rgba(59,130,246,0.6); }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen px-4">
+
+    <!-- Logo -->
+    <div class="mb-10 text-center">
+        <div class="text-5xl font-black tracking-widest text-blue-400 logo-glow mb-2">Valid8</div>
+        <div class="text-gray-500 text-sm tracking-widest uppercase">Rutgers University Parking System</div>
+    </div>
+
+    <!-- Portal selector card -->
+    <div class="w-full max-w-md">
+
+        <!-- Tabs -->
+        <div class="flex gap-1 mb-0" id="tabs">
+            <button class="portal-tab active-student" id="tabStudent" onclick="switchPortal('student')">
+                Student Portal
+            </button>
+            <button class="portal-tab inactive" id="tabRupd" onclick="switchPortal('rupd')">
+                RUPD Portal
+            </button>
+        </div>
+
+        <!-- Form Panel -->
+        <div class="form-panel p-8" style="background: #0a0f1e; border: 1px solid #1d4ed8;">
+
+            <!-- Student Form -->
+            <div id="formStudent">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="badge-student rounded-full px-3 py-1 text-xs font-bold text-blue-300 tracking-wide">STUDENT</div>
+                    <span class="text-gray-400 text-sm">Parking Dashboard Access</span>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-blue-400 font-semibold mb-1.5 uppercase tracking-wider">NetID / Username</label>
+                        <input class="input-field" type="text" id="studentUser" placeholder="e.g. abc123" autocomplete="username"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-blue-400 font-semibold mb-1.5 uppercase tracking-wider">Password</label>
+                        <input class="input-field" type="password" id="studentPass" placeholder="Enter password" autocomplete="current-password"/>
+                    </div>
+                    <div id="studentError" class="hidden text-red-400 text-xs text-center bg-red-950 border border-red-800 rounded-lg px-3 py-2"></div>
+                    <button class="btn-login mt-2" id="btnStudent"
+                            style="background: linear-gradient(135deg, #1d4ed8, #2563eb); color: #fff; border: none;"
+                            onclick="doLogin('student')">
+                        Sign In as Student →
+                    </button>
+                </div>
+            </div>
+
+            <!-- RUPD Form -->
+            <div id="formRupd" class="hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="badge-rupd rounded-full px-3 py-1 text-xs font-bold text-blue-300 tracking-wide">RUPD OFFICER</div>
+                    <span class="text-gray-400 text-sm">Enforcement Dashboard Access</span>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-blue-400 font-semibold mb-1.5 uppercase tracking-wider">Badge ID / Username</label>
+                        <input class="input-field" type="text" id="rupdUser" placeholder="e.g. officer01" autocomplete="username"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-blue-400 font-semibold mb-1.5 uppercase tracking-wider">Password</label>
+                        <input class="input-field" type="password" id="rupdPass" placeholder="Enter password" autocomplete="current-password"/>
+                    </div>
+                    <div id="rupdError" class="hidden text-red-400 text-xs text-center bg-red-950 border border-red-800 rounded-lg px-3 py-2"></div>
+                    <button class="btn-login mt-2" id="btnRupd"
+                            style="background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: #fff; border: none;"
+                            onclick="doLogin('rupd')">
+                        Sign In as RUPD Officer →
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <p class="text-center text-gray-600 text-xs mt-6">
+            Valid8 Parking Management System · Rutgers University New Brunswick
+        </p>
+    </div>
+
+<script>
+    let activePortal = 'student';
+
+    function switchPortal(portal) {
+        activePortal = portal;
+        const isStudent = portal === 'student';
+
+        document.getElementById('formStudent').classList.toggle('hidden', !isStudent);
+        document.getElementById('formRupd').classList.toggle('hidden', isStudent);
+
+        document.getElementById('tabStudent').className = 'portal-tab ' + (isStudent ? 'active-student' : 'inactive');
+        document.getElementById('tabRupd').className = 'portal-tab ' + (!isStudent ? 'active-rupd' : 'inactive');
+    }
+
+    function doLogin(portal) {
+        const user = document.getElementById(portal === 'student' ? 'studentUser' : 'rupdUser').value.trim();
+        const pass = document.getElementById(portal === 'student' ? 'studentPass' : 'rupdPass').value.trim();
+        const errEl = document.getElementById(portal === 'student' ? 'studentError' : 'rupdError');
+
+        if (!user || !pass) {
+            errEl.textContent = 'Please enter a username and password.';
+            errEl.classList.remove('hidden');
+            return;
+        }
+
+        errEl.classList.add('hidden');
+
+        // Any credentials accepted — just route to the correct portal
+        if (portal === 'student') {
+            window.location.href = '/student';
+        } else {
+            window.location.href = '/rupd';
+        }
+    }
+
+    // Allow Enter key to submit
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') doLogin(activePortal);
+    });
+</script>
+</body>
+</html>

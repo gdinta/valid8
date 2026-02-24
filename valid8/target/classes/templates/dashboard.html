@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Valid8 — Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-slate-800 border-b border-yellow-400 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+        <span class="text-yellow-400 text-2xl font-extrabold tracking-wide">Valid8</span>
+        <div class="flex gap-6 text-sm font-medium">
+            <a href="/" class="text-yellow-400 border-b-2 border-yellow-400 pb-0.5">Dashboard</a>
+            <a href="/violations" class="text-slate-300 hover:text-yellow-400 transition">Violations</a>
+            <a href="/unregistered" class="text-slate-300 hover:text-yellow-400 transition">Unregistered</a>
+            <a href="/map" class="text-slate-300 hover:text-yellow-400 transition">Map</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<div class="max-w-7xl mx-auto px-4 pt-8 pb-4 flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <h1 class="text-3xl font-bold text-white">Parking Dashboard</h1>
+        <p class="text-slate-400 text-sm mt-1">Rutgers University — New Brunswick Campus</p>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+        <span id="lastUpdated" class="text-slate-400 text-xs"></span>
+        <button onclick="reloadData()"
+                class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm transition">
+            ↺ Reload Data
+        </button>
+    </div>
+</div>
+
+<!-- Error Banner -->
+<div id="errorBanner" class="hidden max-w-7xl mx-auto px-4 mb-4">
+    <div class="bg-red-900 border border-red-500 text-red-200 px-4 py-3 rounded-lg text-sm"></div>
+</div>
+
+<!-- Lot Cards Grid -->
+<main class="max-w-7xl mx-auto px-4 pb-12">
+    <div id="lotGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Cards injected by dashboard.js -->
+        <div class="col-span-full text-center text-slate-500 py-16">Loading lots…</div>
+    </div>
+</main>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

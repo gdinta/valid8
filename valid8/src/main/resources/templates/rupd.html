@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Valid8 — RUPD Enforcement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <style>
+        body {
+            background: #000;
+        }
+
+        .nav-bg {
+            background: #03080f;
+            border-bottom: 1px solid #1e40af;
+        }
+
+        .section-bg {
+            background: #03080f;
+            border: 1px solid #1e3a5f;
+        }
+
+        .table-head {
+            background: #050d1a;
+        }
+
+        .row-a {
+            background: #020810;
+        }
+
+        .row-b {
+            background: #03080f;
+        }
+
+        tr:hover td {
+            background: #0a1628 !important;
+        }
+
+        .search-select {
+            background: #050d1a;
+            border: 1px solid #1d4ed8;
+            color: #93c5fd;
+            border-radius: 7px;
+            padding: 7px 14px;
+            font-size: 13px;
+            outline: none;
+            width: 240px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+        }
+
+        .search-select option {
+            background: #050d1a;
+            color: #93c5fd;
+        }
+
+        .search-select:focus {
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+
+<body class="text-white min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="nav-bg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-3">
+            <div class="flex items-center gap-3">
+                <span class="text-blue-400 text-2xl font-black tracking-widest">Valid8</span>
+                <span
+                    class="bg-blue-950 text-blue-400 text-xs font-bold px-2 py-0.5 rounded-full border border-blue-800">RUPD</span>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+                <span id="lastUpdated" class="text-blue-900 text-xs"></span>
+                <button onclick="reloadData()"
+                    class="bg-blue-800 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition">
+                    ↺ Reload Data
+                </button>
+                <a href="/" class="text-gray-500 hover:text-blue-400 text-xs transition">← Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="max-w-7xl mx-auto px-4 pt-7 pb-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <h1 class="text-2xl font-black text-white">Unregistered Vehicles</h1>
+            <p class="text-blue-900 text-sm mt-0.5">Rutgers University Police Department · Parking Operations</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="section-bg rounded-xl px-6 py-3 text-center">
+                <div id="totalCount" class="text-2xl font-black text-blue-400">—</div>
+                <div class="text-xs text-gray-500 mt-0.5">Unregistered</div>
+            </div>
+            <select class="search-select" id="searchBox" onchange="applySearch()">
+                <option value="">— All Lots —</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Error Banner -->
+    <div id="errorBanner" class="hidden max-w-7xl mx-auto px-4 mb-3">
+        <div class="bg-red-950 border border-red-700 text-red-300 px-4 py-2 rounded-lg text-sm"></div>
+    </div>
+
+    <!-- Table -->
+    <main class="max-w-7xl mx-auto px-4 pb-12">
+        <div class="section-bg rounded-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="table-head text-blue-500 text-xs uppercase tracking-wider">
+                            <th class="px-5 py-3 text-left">#</th>
+                            <th class="px-5 py-3 text-left">License Plate</th>
+                            <th class="px-5 py-3 text-left">Lot</th>
+                            <th class="px-5 py-3 text-left">Time In</th>
+                            <th class="px-5 py-3 text-left">Time Out</th>
+                        </tr>
+                    </thead>
+                    <tbody id="unregBody">
+                        <tr>
+                            <td colspan="5" class="text-center py-16 text-blue-900">Loading…</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/rupd.js}"></script>
+</body>
+
+</html>

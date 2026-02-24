@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Valid8 — Student Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <style>
+        body { background: #000; }
+        .nav-bg { background: #050d1a; border-bottom: 1px solid #1d4ed8; }
+        .card-bg { background: #050d1a; border: 1px solid #1e3a5f; }
+        .card-bg:hover { border-color: #3b82f6; box-shadow: 0 0 18px rgba(59,130,246,0.15); }
+        .section-bg { background: #020810; border: 1px solid #1e3a5f; }
+        select.lot-select {
+            background: #050d1a;
+            border: 1px solid #1d4ed8;
+            color: #93c5fd;
+            padding: 8px 36px 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+        }
+        select.lot-select option { background: #050d1a; color: #93c5fd; }
+        #mapContainer { height: 440px; border-radius: 10px; overflow: hidden; }
+        .bar-track { background: #0d1f3a; border-radius: 9999px; height: 10px; }
+        .key-dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .scrollable-cards { scroll-behavior: smooth; }
+        .highlighted-card { border-color: #3b82f6 !important; box-shadow: 0 0 24px rgba(59,130,246,0.3) !important; }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+
+<!-- Navbar -->
+<nav class="nav-bg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-3">
+            <span class="text-blue-400 text-2xl font-black tracking-widest">Valid8</span>
+            <span class="bg-blue-900 text-blue-300 text-xs font-bold px-2 py-0.5 rounded-full">STUDENT</span>
+        </div>
+        <div class="flex items-center gap-3 flex-wrap">
+            <!-- Lot Quick-Jump Dropdown -->
+            <div class="flex items-center gap-2">
+                <span class="text-blue-400 text-xs font-semibold hidden sm:block">Jump to Lot:</span>
+                <select class="lot-select" id="lotJumpSelect" onchange="jumpToLot(this.value)">
+                    <option value="">— Select a Lot —</option>
+                </select>
+            </div>
+            <span id="lastUpdated" class="text-blue-900 text-xs hidden sm:block"></span>
+            <button onclick="reloadData()"
+                    class="bg-blue-700 hover:bg-blue-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition">
+                ↺ Reload
+            </button>
+            <a href="/" class="text-gray-500 hover:text-blue-400 text-xs transition">← Logout</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Title -->
+<div class="max-w-7xl mx-auto px-4 pt-7 pb-3">
+    <h1 class="text-2xl font-black text-white">Parking Dashboard</h1>
+    <p class="text-blue-900 text-sm mt-0.5">Rutgers University — New Brunswick Campus · Live availability</p>
+</div>
+
+<!-- Error Banner -->
+<div id="errorBanner" class="hidden max-w-7xl mx-auto px-4 mb-3">
+    <div class="bg-red-950 border border-red-700 text-red-300 px-4 py-2 rounded-lg text-sm"></div>
+</div>
+
+<!-- ===== AVAILABILITY KEY ===== -->
+<div class="max-w-7xl mx-auto px-4 mb-5">
+    <div class="section-bg rounded-xl px-5 py-3 flex flex-wrap items-center gap-6">
+        <span class="text-blue-400 text-xs font-bold uppercase tracking-widest">Availability Key</span>
+        <div class="flex items-center gap-2">
+            <span class="key-dot" style="background:#22c55e;"></span>
+            <span class="text-gray-300 text-sm"><strong class="text-green-400">Green</strong> — High availability</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="key-dot" style="background:#facc15;"></span>
+            <span class="text-gray-300 text-sm"><strong class="text-yellow-400">Yellow</strong> — Limited availability</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="key-dot" style="background:#ef4444;"></span>
+            <span class="text-gray-300 text-sm"><strong class="text-red-400">Red</strong> — Almost full</span>
+        </div>
+        <span id="lastUpdatedKey" class="ml-auto text-blue-900 text-xs"></span>
+    </div>
+</div>
+
+<!-- ===== LOT CARDS GRID ===== -->
+<div class="max-w-7xl mx-auto px-4 mb-8">
+    <div id="lotGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 scrollable-cards">
+        <div class="col-span-full text-center text-blue-900 py-12 text-sm">Loading lots…</div>
+    </div>
+</div>
+
+<!-- ===== MAP ===== -->
+<div class="max-w-7xl mx-auto px-4 pb-12">
+    <div class="section-bg rounded-xl p-5">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <h2 class="text-lg font-bold text-blue-300">Live Campus Map</h2>
+            <div class="flex gap-4 text-xs text-gray-400">
+                <span class="flex items-center gap-1.5"><span class="key-dot" style="background:#22c55e;box-sizing:border-box;border:2px solid #16a34a;"></span>High</span>
+                <span class="flex items-center gap-1.5"><span class="key-dot" style="background:#facc15;border:2px solid #ca8a04;"></span>Medium</span>
+                <span class="flex items-center gap-1.5"><span class="key-dot" style="background:#ef4444;border:2px solid #b91c1c;"></span>Low</span>
+            </div>
+        </div>
+        <div id="mapContainer"></div>
+        <p class="text-blue-900 text-xs mt-2 text-right">Click a marker to see lot details · Updates every 5 seconds</p>
+    </div>
+</div>
+
+<!-- Leaflet + scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/student.js}"></script>
+</body>
+</html>
